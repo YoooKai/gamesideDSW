@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'categories.apps.CategoriesConfig',
     'orders.apps.OrdersConfig',
     'users.apps.UsersConfig',
+    'colorfield',
 ]
 
 MIDDLEWARE = [

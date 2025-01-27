@@ -1,17 +1,21 @@
-from django.shortcuts import render
+from .models import Game
 
-# Create your views here.
+
 def game_list(request):
+    games = Game.objects.all()
+
+
+def game_detail(request, pk):
     pass
 
-def game_detail(request,pk):
-    pass
 
 def review_detail(request, pk):
     pass
 
+
 def review_list(request):
     pass
+
 
 def add_review(request):
     pass

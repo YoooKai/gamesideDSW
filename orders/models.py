@@ -8,8 +8,8 @@ class Order(models.Model):
     class Status(models.IntegerChoices):
         INITIATED = 1
         CONFIRMED = 2
-        CANCELLED = -1
         PAID = 3
+        CANCELLED = -1
 
     status = models.IntegerField(choices=Status, default=1)
     key = models.UUIDField(unique=True, default=uuid.uuid4)

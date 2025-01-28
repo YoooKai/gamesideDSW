@@ -15,7 +15,7 @@ class Game(models.Model):
     title = models.CharField(max_length=250, unique=True)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True)
-    cover = models.ImageField(default='cover/nocover.png', blank=True)
+    cover = models.ImageField(default='covers/default.jpg', blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=5)
     stock = models.PositiveIntegerField()
     released_at = models.DateField()

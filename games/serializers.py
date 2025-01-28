@@ -1,7 +1,7 @@
 from shared.serializers import BaseSerializer
 from platforms.serializers import PlatformSerializer  
 from categories.serializers import CategorySerializer 
-
+from users.serializers import UserSerializer
 class GameSerializer(BaseSerializer):
     def __init__(self, to_serialize, *, fields=[], request=None):
         super().__init__(to_serialize, fields=fields, request=request)
@@ -31,8 +31,7 @@ class ReviewSerializer(BaseSerializer):
             'comment': instance.comment,
             'rating': instance.rating,
             'game': GameSerializer(instance.game).serialize(),
-            #Esto no estoy seguro de si hay que hacer serializador de User!
-            # 'author': UserSerializer(instance.author).serialize(),
+            'author': UserSerializer(instance.author).serialize(),
             'created_at': instance.created_at.isoformat(),  
             'updated_at': instance.updated_at.isoformat(), 
 

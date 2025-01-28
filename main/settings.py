@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'orders.apps.OrdersConfig',
     'users.apps.UsersConfig',
     'colorfield',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

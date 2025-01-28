@@ -43,7 +43,7 @@ class Review(models.Model):
     rating = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
-    game = models.ForeignKey('games.Game', related_name='games', on_delete=models.CASCADE)
+    game = models.ForeignKey('games.Game', related_name='reviews', on_delete=models.CASCADE)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name='author_reviews', on_delete=models.CASCADE
     )

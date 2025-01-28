@@ -3,12 +3,13 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from shared.decorators import auth_required
+from shared.decorators import auth_required, check_method
 
 from .models import Game, Review
-from .serializers import GameSerializer
+from .serializers import GameSerializer, ReviewSerializer
 
 
+@check_method
 @require_GET
 def game_list(request):
     games = Game.objects.all()
@@ -16,16 +17,26 @@ def game_list(request):
     return serializer.json_response()
 
 
-def game_detail(request, pk):
-    pass
+@check_method
+@require_GET
+def game_detail(request, title):
+    games = Game.objects.get(slug=title)
+    serializer = GameSerializer(games, request=request)
+    return serializer.json_response()
 
 
+@check_method
 def review_detail(request, pk):
-    pass
+    reviews = Review.objects.get(pk=pk)
+    serializer = ReviewSerializer(reviews, request=request)
+    return serializer.json_response()  # no funciona
 
 
-def review_list(request):
-    pass
+@check_method
+def review_list(request, title):
+    reviews = Review.objects.all()
+    serializer = ReviewSerializer(reviews, request=request)
+    return serializer.json_response()  # no funciona
 
 
 @csrf_exempt

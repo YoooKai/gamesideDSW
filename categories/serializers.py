@@ -1,7 +1,7 @@
 from shared.serializers import BaseSerializer
 
 
-class GameSerializer(BaseSerializer):
+class CategorySerializer(BaseSerializer):
     def __init__(self, to_serialize, *, fields=[], request=None):
         super().__init__(to_serialize, fields=fields, request=request)
 
@@ -11,8 +11,5 @@ class GameSerializer(BaseSerializer):
             'name': instance.name,
             'slug': instance.slug,
             'description': instance.description,
-            'logo': self.build_url(instance.logo.url),
-            'cover': self.build_url(instance.cover.url()),
-            'price': float(instance.price),
-            'released_at': instance.released_at.isoformat(),
+            'color': instance.color,
         }

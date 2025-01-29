@@ -1,7 +1,9 @@
+from games.serializers import GameSerializer
 from shared.serializers import BaseSerializer
-from games.serializers import GameSerializer  
+from users.serializers import UserSerializer
 
-class GameSerializer(BaseSerializer):
+
+class OrderSerializer(BaseSerializer):
     def __init__(self, to_serialize, *, fields=[], request=None):
         super().__init__(to_serialize, fields=fields, request=request)
 
@@ -12,6 +14,6 @@ class GameSerializer(BaseSerializer):
             'key': str(instance.key),
             'created_at': instance.created_at.isoformat(),
             'updated_at': instance.updated_at.isoformat(),
-            #'user': ???
-            'games': GameSerializer(instance.games.all(), request=self.request).serialize(), 
+            'user': UserSerializer(instance.author).serialize(),
+            'games': GameSerializer(instance.games.all(), request=self.request).serialize(),
         }

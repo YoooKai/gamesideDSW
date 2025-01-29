@@ -4,9 +4,6 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponse, JsonResponse
 from rest_framework import status
 
-from categories.models import Category
-from games.models import Game
-
 
 def auth_required(func):
     def wrapper(request, *args, **kwargs):
@@ -30,28 +27,6 @@ def check_method(func):
     return wrapper
 
 
-def game_exist(func):
-    def wrapper(request, *args, **kwargs):
-        try:
-            Game.objects.get(slug=args[1])
-        except get_user_model().DoesNotExist:
-            return JsonResponse({'error': 'Game not found'}, status=404)
-        return func(request, *args, **kwargs)
-
-    return wrapper
-
-
-def category_exist(func):
-    def wrapper(request, *args, **kwargs):
-        try:
-            Category.objects.get(slug=kwargs.get('slug'))
-        except Category.DoesNotExist:
-            return JsonResponse({'error': 'Category not found'}, status=404)
-        return func(request, *args, **kwargs)
-
-    return wrapper
-
-
 def existatata(model):
     def decorator(func):
         def wrapper(request, *args, **kwargs):
@@ -60,9 +35,7 @@ def existatata(model):
                 model.objects.get(slug=kwargs.get('slug'))
             except model.DoesNotExist:
                 return JsonResponse({'error': f'{name} not found'}, status=404)
-
             return func(request, *args, **kwargs)
-
         return wrapper
 
     return decorator

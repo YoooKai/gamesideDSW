@@ -7,7 +7,7 @@ app_name = 'games'
 urlpatterns = [
     path('', views.game_list, name='game-list'),
     path('reviews/<pk>/', views.review_detail, name='review-detail'),
-    path('<slug:title>/reviews/', views.review_list, name='review-list'),
-    path('<slug:title>/', views.game_detail, name='game-detail'),
-    path('<slug:title>/reviews/add/', views.add_review, name='add-review'),
+    path('<slug:slug>/reviews/', views.review_list, name='review-list'),
+    path('<slug:slug>/', views.game_detail, name='game-detail'),
+    path('<slug:slug>/reviews/add/', views.add_review, name='add-review'),
 ]

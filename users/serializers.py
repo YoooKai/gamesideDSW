@@ -21,8 +21,8 @@ class UserSerializer(BaseSerializer):
     def serialize_instance(self, instance) -> dict:
         return {
             'id': instance.pk,
-            'first_name': instance.name,
-            'last_name': str(instance.key),
+            'first_name': instance.first_name,
+            'last_name': instance.last_name,
             'email': instance.email,
             'username': instance.username,
         }

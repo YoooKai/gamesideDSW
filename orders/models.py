@@ -20,5 +20,5 @@ class Order(models.Model):
     )
     games = models.ManyToManyField('games.Game', related_name='game_orders', blank=True)
 
-    def __str__(self):
-        return self.name
+    # def __str__(self):
+    #     return self.key

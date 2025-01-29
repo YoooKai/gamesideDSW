@@ -1,12 +1,26 @@
 # Create your views here.
+from serializers import OrderSerializer
+
+from .models import Order
 
 
-def add_order(request):
+def add_order(request, slug):
+    # data = request.json
+    # game = get_object_or_404(Game, slug=slug)
+    # order = Order.objects.create(
+    #     rating=data.get('rating'),
+    #     comment=data.get('comment'),
+    #     game=game,
+    #     author=request.user,
+    # )
+    # return JsonResponse({'id': review.pk})
     pass
 
 
-def order_detail(request):
-    pass
+def order_detail(request, pk):
+    order = Order.objects.get(id=pk)
+    serializer = OrderSerializer(order, request=request)
+    return serializer.json_response()
 
 
 def order_confirm(request):

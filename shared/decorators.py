@@ -1,18 +1,15 @@
-import json
+import re
 
-from django.contrib.auth import get_user_model
-from django.http import HttpResponse, JsonResponse
-from rest_framework import status
+from django.http import JsonResponse
 
 
-def auth_required(func):
+def token_checker(func):
     def wrapper(request, *args, **kwargs):
-        json_post = json.loads(request.body)
-        try:
-            user = get_user_model().objects.get(token_key=json_post['token'])
-            request.user = user
-        except get_user_model().DoesNotExist:
-            return HttpResponse(status=status.UNAUTHORIZED)
+        PATTERN = r'^Bearer (?P<token>[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$'
+        token = request.headers.get('Authorization')
+        clean_token = re.fullmatch(PATTERN, token)
+        if not clean_token:
+            return JsonResponse({'error': 'Invalid authentication token'}, status=400)
         return func(request, *args, **kwargs)
 
     return wrapper
@@ -36,6 +33,7 @@ def existatata(model):
             except model.DoesNotExist:
                 return JsonResponse({'error': f'{name} not found'}, status=404)
             return func(request, *args, **kwargs)
+
         return wrapper
 
     return decorator

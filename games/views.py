@@ -1,11 +1,12 @@
 import json
+import re
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from shared.decorators import check_method, existatata
+from shared.decorators import check_method, existatata, token_checker
 from users.models import Token
 
 from .models import Game, Review
@@ -33,37 +34,32 @@ def review_list(request, slug):
     game = Game.objects.get(slug=slug)
     reviews = game.reviews.all()
     serializer = ReviewSerializer(reviews, request=request)
-    return serializer.json_response()  # no funciona
+    return serializer.json_response()
 
 
 @check_method
 def review_detail(request, pk):
     reviews = Review.objects.get(pk=pk)
     serializer = ReviewSerializer(reviews, request=request)
-    return serializer.json_response()  # no funciona
+    return serializer.json_response()
 
 
+@token_checker
 @csrf_exempt
 @require_POST
 def add_review(request, slug):
     json_post = json.loads(request.body)
+    print(request.body)
+    PATTERN = r'^Bearer (?P<token>[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$'
+    token = request.headers.get('Authorization')
+    clean_token = re.fullmatch(PATTERN, token)[2]
+
     game = get_object_or_404(Game, slug=slug)
-    user = get_object_or_404(Token, user=request.user)
+    user = get_object_or_404(Token, key=clean_token).user
     review = Review.objects.create(
-        rating=json_post['rating'],
-        comment=json_post['comment'],
+        **json_post,
         game=game,
         author=user,
     )
-    return JsonResponse({'id': review.pk})
 
-    # comment = models.TextField()
-    # rating = models.PositiveSmallIntegerField(
-    #     validators=[MinValueValidator(1), MaxValueValidator(5)]
-    # )
-    # game = models.ForeignKey('games.Game', related_name='reviews', on_delete=models.CASCADE)
-    # author = models.ForeignKey(
-    #     settings.AUTH_USER_MODEL, related_name='author_reviews', on_delete=models.CASCADE
-    # )
-    # created_at = models.DateTimeField(auto_now_add=True)
-    # updated_at = models.DateTimeField(auto_now=True)
+    return JsonResponse({'id': review.pk}, status=200)

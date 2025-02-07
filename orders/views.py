@@ -4,7 +4,7 @@ import re
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-
+from .serializers import OrderSerializer
 from shared.decorators import check_method, token_checker
 from users.models import Token
 
@@ -17,7 +17,7 @@ def add_order(request):
     PATTERN = r'^Bearer (?P<token>[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$'
     token = request.headers.get('Authorization')
     clean_token = re.fullmatch(PATTERN, token)[1]
-    print(clean_token)
+    
     user = get_object_or_404(Token, key=clean_token).user
     order = Order.objects.create(
         user=user,

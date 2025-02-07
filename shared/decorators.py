@@ -58,7 +58,7 @@ def field_checker(field_names):
 
         return wrapper
 
-    return decorator
+    return decorator            
 
 
 def check_method(method):

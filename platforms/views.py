@@ -6,17 +6,16 @@ from shared.decorators import check_method, existatata
 from .models import Platform
 from .serializers import PlatformSerializer
 
-# Create your views here.
 
 
-@check_method
+@check_method('GET')
 @require_GET
 def platform_list(request):
     plataform = Platform.objects.all()
     serializer = PlatformSerializer(plataform, request=request)
     return serializer.json_response()
 
-@check_method
+@check_method('GET')
 @existatata(Platform)
 @require_GET
 def platform_detail(request, slug):

@@ -16,11 +16,10 @@ def platform_list(request):
     serializer = PlatformSerializer(plataform, request=request)
     return serializer.json_response()
 
-
-@existatata(Platform)
 @check_method
+@existatata(Platform)
 @require_GET
-def platform_detail(request, name):
-    plataform = Platform.objects.get(slug=name)
+def platform_detail(request, slug):
+    plataform = Platform.objects.get(slug=slug)
     serializer = PlatformSerializer(plataform, request=request)
     return serializer.json_response()

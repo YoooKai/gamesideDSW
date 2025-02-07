@@ -20,5 +20,9 @@ class Order(models.Model):
     )
     games = models.ManyToManyField('games.Game', related_name='game_orders', blank=True)
 
+    @property
+    def price(self):
+        return sum(game.price for game in self.price.all())
+
     # def __str__(self):
     #     return self.key

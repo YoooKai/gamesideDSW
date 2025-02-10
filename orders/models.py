@@ -22,7 +22,13 @@ class Order(models.Model):
 
     @property
     def price(self):
-        return sum(game.price for game in self.price.all())
+        return sum(game.price for game in self.games.all())
+
+    def get_key(self):
+        if self.status == 3:
+            return str(self.key)
+        else:
+            return None
 
     # def __str__(self):
     #     return self.key

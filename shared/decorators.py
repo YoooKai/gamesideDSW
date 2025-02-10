@@ -3,6 +3,7 @@ import re
 
 from django.http import JsonResponse
 
+from orders.models import Order
 from users.models import Token
 
 
@@ -58,7 +59,7 @@ def field_checker(field_names):
 
         return wrapper
 
-    return decorator            
+    return decorator
 
 
 def check_method(method):
@@ -101,3 +102,17 @@ def existatata2(model):
         return wrapper
 
     return decorator
+
+
+def owner_checker(func):
+    def wrapper(request, *args, **kwargs):
+        PATTERN = r'^Bearer (?P<token>[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$'
+        token = request.headers.get('Authorization')
+        clean_token = re.fullmatch(PATTERN, token)[1]
+        order = Order.objects.get(pk=kwargs.get('pk'))
+        user = Token.objects.get(key=clean_token)
+        if user.user != order.user:
+            return JsonResponse({'error': 'User is not the owner of requested order'}, status=403)
+        return func(request, *args, **kwargs)
+
+    return wrapper

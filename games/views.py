@@ -72,7 +72,6 @@ def add_review(request, slug):
     PATTERN = r'^Bearer (?P<token>[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$'
     token = request.headers.get('Authorization')
     clean_token = re.fullmatch(PATTERN, token)[1]
-
     game = get_object_or_404(Game, slug=slug)
     user = get_object_or_404(Token, key=clean_token).user
     review = Review.objects.create(

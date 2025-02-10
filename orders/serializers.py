@@ -11,9 +11,10 @@ class OrderSerializer(BaseSerializer):
         return {
             'id': instance.pk,
             'status': instance.get_status_display(),
-            'key': str(instance.key),
+            'key': instance.get_key(),
             'created_at': instance.created_at.isoformat(),
             'updated_at': instance.updated_at.isoformat(),
-            'user': UserSerializer(instance.author).serialize(),
+            'user': UserSerializer(instance.user).serialize(),
             'games': GameSerializer(instance.games.all(), request=self.request).serialize(),
+            'price': instance.price,
         }

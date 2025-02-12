@@ -8,10 +8,10 @@ from django.views.decorators.http import require_GET, require_POST
 
 from shared.decorators import (
     check_method,
-    existatata,
-    existatata2,
+    data_exists,
     field_checker,
     json_checker,
+    model_check,
     rating_checker,
     token_checker,
 )
@@ -36,7 +36,7 @@ def game_list(request):
 
 
 @check_method('GET')
-@existatata(Game)
+@data_exists(Game)
 def game_detail(request, slug):
     games = Game.objects.get(slug=slug)
     serializer = GameSerializer(games, request=request)
@@ -44,7 +44,7 @@ def game_detail(request, slug):
 
 
 @check_method('GET')
-@existatata(Game)
+@data_exists(Game)
 def review_list(request, slug):
     game = Game.objects.get(slug=slug)
     reviews = game.reviews.all()
@@ -53,7 +53,7 @@ def review_list(request, slug):
 
 
 @check_method('GET')
-@existatata2(Review)
+@model_check(Review)
 def review_detail(request, pk):
     reviews = Review.objects.get(pk=pk)
     serializer = ReviewSerializer(reviews, request=request)
@@ -64,7 +64,7 @@ def review_detail(request, pk):
 @field_checker(('rating', 'comment'))
 @rating_checker
 @token_checker
-@existatata(Game)
+@data_exists(Game)
 @csrf_exempt
 @require_POST
 def add_review(request, slug):

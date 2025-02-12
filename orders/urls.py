@@ -8,7 +8,7 @@ urlpatterns = [
     path('add/', views.add_order, name='add-order'),
     path('<pk>/', views.order_detail, name='order-detail'),
     path('<pk>/games/', views.order_game_list, name='order-game-list'),
-    path('<pk>/games/add/<slug:slug>/', views.add_game_to_order, name='add-game-to-order'),
-    path('<pk>/games/status/', views.change_order_status, name='change-order-status'),
+    path('<pk>/games/add/', views.add_game_to_order, name='add-game-to-order'),
+    path('<pk>/status/', views.change_order_status, name='change-order-status'),
     path('<pk>/pay/', views.pay_order, name='pay-order'),
 ]

@@ -1,4 +1,4 @@
-from shared.decorators import check_method, existatata
+from shared.decorators import check_method, data_exists
 
 from .models import Category
 from .serializers import CategorySerializer
@@ -12,7 +12,7 @@ def category_list(request):
 
 
 @check_method('GET')
-@existatata(Category)
+@data_exists(Category)
 def category_detail(request, slug):
     category = Category.objects.get(slug=slug)
     serializer = CategorySerializer(category, request=request)

@@ -1,12 +1,13 @@
 import json
 import re
+from datetime import datetime
 
 from django.http import JsonResponse
 
 from games.models import Game
 from orders.models import Order
 from users.models import Token
-import datetime
+
 
 def token_checker(func):
     def wrapper(request, *args, **kwargs):
@@ -131,25 +132,23 @@ def game_exists(func):
     return wrapper
 
 
-
-
-
 def card_checker(func):
     def wrapper(request, *args, **kwargs):
-        card_number=json.loads(request.body)['card-number']
-        exp_date=json.loads(request.body)['exp-date']
-        cvc=json.loads(request.body)['cvc']
-        if not re.fullmatch(r'^\d{4}-\d{4}-\d{4}-\d{4}$',card_number):
+        card_number = json.loads(request.body)['card-number']
+        exp_date = json.loads(request.body)['exp-date']
+        cvc = json.loads(request.body)['cvc']
+        if not re.fullmatch(r'^\d{4}-\d{4}-\d{4}-\d{4}$', card_number):
             return JsonResponse({'error': 'Invalid card number'}, status=400)
 
-        if not re.fullmatch(r'\d{2}/\d{4}^$',exp_date):
-            date_object = datetime.strptime(exp_date, "%m, %Y")
-            if date_object > datetime.now():
-                return JsonResponse({'error': 'Invalid expiration date'}, status=400)
-        
-        if not re.fullmatch(r'^\d{3}$',cvc):
+        if not re.fullmatch(r'^\d{2}/\d{4}$', exp_date):
+            return JsonResponse({'error': 'Invalid expiration date'}, status=400)
+
+        date_object = datetime.strptime(exp_date, '%m/%Y')
+        if date_object < datetime.now():
+                return JsonResponse({'error': 'Card expired'}, status=400)
+        if not re.fullmatch(r'^\d{3}$', cvc):
             return JsonResponse({'error': 'Invalid CVC'}, status=400)
-        
+
         return func(request, *args, **kwargs)
 
     return wrapper

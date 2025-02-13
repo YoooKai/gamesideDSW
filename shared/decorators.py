@@ -17,7 +17,7 @@ def token_checker(func):
         if not clean_token:
             return JsonResponse({'error': 'Invalid authentication token'}, status=400)
         try:
-            Token.objects.get(key=clean_token[1])
+            Token.objects.get(key=clean_token['token'])
         except Token.DoesNotExist:
             return JsonResponse({'error': 'Unregistered authentication token'}, status=401)
         return func(request, *args, **kwargs)
@@ -76,27 +76,17 @@ def check_method(method):
     return decorator
 
 
-def data_exists(model):
+def model_exists(list):
     def decorator(func):
         def wrapper(request, *args, **kwargs):
+            model = list[0]
+            slug_or_pk = list[1]
             try:
                 name = model._meta.object_name
-                model.objects.get(slug=kwargs.get('slug'))
-            except model.DoesNotExist:
-                return JsonResponse({'error': f'{name} not found'}, status=404)
-            return func(request, *args, **kwargs)
-
-        return wrapper
-
-    return decorator
-
-
-def model_check(model):
-    def decorator(func):
-        def wrapper(request, *args, **kwargs):
-            try:
-                name = model._meta.object_name
-                model.objects.get(pk=kwargs.get('pk'))
+                if slug_or_pk == 'pk':
+                    model.objects.get(pk=kwargs.get(slug_or_pk))
+                else:
+                    model.objects.get(slug=kwargs.get(slug_or_pk))
             except model.DoesNotExist:
                 return JsonResponse({'error': f'{name} not found'}, status=404)
             return func(request, *args, **kwargs)
@@ -139,13 +129,14 @@ def card_checker(func):
         cvc = json.loads(request.body)['cvc']
         if not re.fullmatch(r'^\d{4}-\d{4}-\d{4}-\d{4}$', card_number):
             return JsonResponse({'error': 'Invalid card number'}, status=400)
-
+        
         if not re.fullmatch(r'^\d{2}/\d{4}$', exp_date):
             return JsonResponse({'error': 'Invalid expiration date'}, status=400)
-
+        
         date_object = datetime.strptime(exp_date, '%m/%Y')
         if date_object < datetime.now():
-                return JsonResponse({'error': 'Card expired'}, status=400)
+            return JsonResponse({'error': 'Card expired'}, status=400)
+        
         if not re.fullmatch(r'^\d{3}$', cvc):
             return JsonResponse({'error': 'Invalid CVC'}, status=400)
 

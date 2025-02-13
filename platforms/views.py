@@ -1,7 +1,7 @@
 # Create your views here.
 from django.views.decorators.http import require_GET
 
-from shared.decorators import check_method, data_exists
+from shared.decorators import check_method, model_exists
 
 from .models import Platform
 from .serializers import PlatformSerializer
@@ -16,9 +16,9 @@ def platform_list(request):
 
 
 @check_method('GET')
-@data_exists(Platform)
+@model_exists([Platform, 'platform_slug'])
 @require_GET
-def platform_detail(request, slug):
-    plataform = Platform.objects.get(slug=slug)
+def platform_detail(request, platform_slug):
+    plataform = Platform.objects.get(slug=platform_slug)
     serializer = PlatformSerializer(plataform, request=request)
     return serializer.json_response()

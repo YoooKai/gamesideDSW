@@ -13,7 +13,7 @@ from shared.decorators import (
     field_checker,
     game_exists,
     json_checker,
-    model_check,
+    model_exists,
     owner_checker,
     token_checker,
 )
@@ -28,7 +28,7 @@ from .serializers import OrderSerializer
 def add_order(request):
     PATTERN = r'^Bearer (?P<token>[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$'
     token = request.headers.get('Authorization')
-    clean_token = re.fullmatch(PATTERN, token)[1]
+    clean_token = re.fullmatch(PATTERN, token)['token']
     user = get_object_or_404(Token, key=clean_token).user
     order = Order.objects.create(
         user=user,
@@ -38,7 +38,7 @@ def add_order(request):
 
 @check_method('GET')
 @token_checker
-@model_check(Order)
+@model_exists([Order, 'pk'])
 @owner_checker
 def order_detail(request, pk):
     order = Order.objects.get(id=pk)
@@ -48,7 +48,7 @@ def order_detail(request, pk):
 
 @check_method('GET')
 @token_checker
-@model_check(Order)
+@model_exists([Order, 'pk'])
 @owner_checker
 def order_game_list(request, pk):
     order = Order.objects.get(id=pk)
@@ -60,7 +60,7 @@ def order_game_list(request, pk):
 @json_checker
 @field_checker(['game-slug'])
 @token_checker
-@model_check(Order)
+@model_exists([Order, 'pk'])
 @game_exists
 @owner_checker
 def add_game_to_order(request, pk):
@@ -80,11 +80,11 @@ def add_game_to_order(request, pk):
 @json_checker
 @field_checker(['status'])
 @token_checker
-@model_check(Order)
+@model_exists([Order, 'pk'])
 @owner_checker
 def change_order_status(request, pk):
-    new_order_status = json.loads(request.body).get('status')
-    if new_order_status not in [2, -1]:
+    new_order_status = json.loads(request.body)['status']
+    if new_order_status not in [Order.Status.CANCELLED, Order.Status.CONFIRMED]:
         return JsonResponse({'error': 'Invalid status'}, status=400)
 
     order = Order.objects.get(pk=pk)
@@ -104,7 +104,7 @@ def change_order_status(request, pk):
 @json_checker
 @field_checker(('card-number', 'exp-date', 'cvc'))
 @token_checker
-@model_check(Order)
+@model_exists([Order, 'pk'])
 @owner_checker
 @card_checker
 def pay_order(request, pk):

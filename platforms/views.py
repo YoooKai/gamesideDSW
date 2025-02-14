@@ -1,4 +1,4 @@
-# Create your views here.
+
 from django.views.decorators.http import require_GET
 
 from shared.decorators import check_method, model_exists

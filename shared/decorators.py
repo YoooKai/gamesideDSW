@@ -1,7 +1,8 @@
 import json
 import re
+
 from django.http import JsonResponse
-from orders.models import Order
+
 from users.models import Token
 
 
@@ -30,6 +31,7 @@ def json_checker(func):
         return func(request, *args, **kwargs)
 
     return wrapper
+
 
 def field_checker(field_names):
     def decorator(func):
@@ -79,6 +81,3 @@ def model_exists(list):
         return wrapper
 
     return decorator
-
-
-

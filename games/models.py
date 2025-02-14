@@ -34,9 +34,6 @@ class Game(models.Model):
     def __str__(self):
         return self.title
 
-    def get_absolute_url(self):
-        pass
-
 
 class Review(models.Model):
     comment = models.TextField()

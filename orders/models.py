@@ -30,5 +30,5 @@ class Order(models.Model):
         else:
             return None
 
-    # def __str__(self):
-    #     return self.key
+    def __str__(self):
+        return self.key

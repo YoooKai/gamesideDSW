@@ -4,13 +4,13 @@ import re
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
+from .decorators import rating_checker
 
 from shared.decorators import (
     check_method,
     field_checker,
     json_checker,
     model_exists,
-    rating_checker,
     token_checker,
 )
 from users.models import Token

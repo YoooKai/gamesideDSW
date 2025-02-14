@@ -1,20 +1,16 @@
-# Create your views here.
 import json
 import re
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-
+from .decorators import game_exists, owner_checker, card_checker
 from games.models import Game
 from games.serializers import GameSerializer
 from shared.decorators import (
-    card_checker,
     check_method,
     field_checker,
-    game_exists,
     json_checker,
     model_exists,
-    owner_checker,
     token_checker,
 )
 from users.models import Token
